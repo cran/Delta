@@ -49,6 +49,6 @@ GetCovariance <- function(mx,Delta,Pi,B){
   Cov_Pi = -(E%*%t(E))/Sum.E
   diag(Cov_Pi) = diag(Cov_Pi) + E
   
-  res = list("Cov_Delta" = Cov_Delta, "Cov_mix" = Cov_mix, "Cov_Pi" = Cov_Pi)
+  res = list("Cov_Delta" = Cov_Delta, "Cov_mix" = Cov_mix, "Cov_Pi" = Cov_Pi,"E" = E)
   return(res)
 }

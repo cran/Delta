@@ -15,7 +15,7 @@ GetKappa <-function(mx){
   #Calculate marginals for expected
   R.marg   = margin.table(mx,1)
   C.marg   = margin.table(mx,2)
-  dim.matrix = dim(mx)
+  dim.matrix = dim(mx)[1]
   n        = sum(R.marg)
 
   Expected = sum(R.marg * C.marg)/n
@@ -33,13 +33,16 @@ GetKappa <-function(mx){
   Expected	= Expected/n
   Copy_matrix = mx/n
   diag(Copy_matrix) = 0
-  aux_rows =  margin.table(Copy_matrix, 1)
+  
+  Rmat = matrix(rep(R.marg/n,dim.matrix ),dim.matrix ,dim.matrix )
+  Cmat = matrix(rep(C.marg/n,dim.matrix ),dim.matrix ,dim.matrix,byrow=TRUE )
   
   #Calculate SE
-  a = sum(diag(mx)/n*(1 - aux_calc * (1-kappa))^2)
-  b = (1-kappa)^2*sum(aux_rows * aux_calc^2)
+  a = sum(diag(mx)/n * (1 - aux_calc * (1-kappa))^2)
+  b = (1-kappa)^2 * sum(Copy_matrix * (Rmat + Cmat)^2)
   c = (kappa - Expected * (1-kappa))^2
   SE = 1/(1-Expected) * sqrt((a+b-c)/n)
+  #SE_alt = 1/(1-Expected)/sqrt(n) * sqrt(Expected + Expected^2 - sum(R.marg/n*C.marg/n*aux_calc))
   res = list("kappa" = kappa, "SE" = SE)
   class(res) <- "GetKappa"
   return(res)

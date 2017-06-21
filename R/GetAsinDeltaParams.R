@@ -29,19 +29,19 @@ GetAsinDeltaParams <- function(mx,fixedrows = TRUE){
   Delta.total = sum(R.marg * Delta)/n
   
   #SE
-  F.cov = diag.Cov
+  F.cov = sqrt(diag.Cov)
   #Sampling type 1
   if (fixedrows == FALSE){
-    P.cov = 1/n^2 * (diag.matrix * (1-P) + 1/4*(mx[3] + mx[2]))
-	A.cov = 1/n^2 * (diag.matrix + 1/4*(mx[3] + mx[2]) - n * A)
-	S.cov = (n * (1 - Delta.total)/(R.marg + C.marg)^2)*(2 - (n * (1 - Delta.total) * (mx[3] + mx[2]))/(R.marg + C.marg)^2)
-	Delta.total.cov = 1/n * (1 - Delta.total) * (1 + Delta.total)
+    P.cov = sqrt(1/n^2 * (diag.matrix * (1-P) + 1/4*(mx[3] + mx[2])))
+	A.cov = sqrt(1/n^2 * (diag.matrix + 1/4*(mx[3] + mx[2]) - n * A^2))
+	S.cov = sqrt((n * (1 - Delta.total)/(R.marg + C.marg)^2)*(2 - (n * (1 - Delta.total) * (mx[3] + mx[2]))/(R.marg + C.marg)^2))
+	Delta.total.cov = sqrt(1/n * (1 - Delta.total) * (1 + Delta.total))
   }#Sampling type 2
   else if (fixedrows == TRUE){
     P.cov = NULL
-    A.cov = (R.marg/n)^2 * diag.Cov
+    A.cov = sqrt((R.marg/n)^2 * diag.Cov)
 	S.cov = NULL
-	Delta.total.cov = (1 - Delta.total)/n * sum(diag.matrix/R.marg) 
+	Delta.total.cov = sqrt((1 - Delta.total)/n * sum(diag.matrix/R.marg) )
   }
   
   res = list("Delta" = Delta, "Pi" = Pi,

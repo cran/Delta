@@ -1,6 +1,6 @@
 Package: Delta
 Title: Measure of Agreement Between Two Raters
-Version: 0.1.0.1
+Version: 0.1.1.1
 Authors@R: person("Antonio", "Rodriguez", email = "tonirodriguezcontesti@gmail.com", role = c("aut", "cre"))
 Description: Measure of agreement Delta was originally by Martín & Femia (2004) <DOI:10.1348/000711004849268>. 
     Since then has been considered as agreement measure for different 
@@ -14,8 +14,8 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1.9000
 NeedsCompilation: no
-Packaged: 2017-06-06 15:39:04 UTC; FabiToni
+Packaged: 2017-06-21 15:59:13 UTC; FabiToni
 Author: Antonio Rodriguez [aut, cre]
 Maintainer: Antonio Rodriguez <tonirodriguezcontesti@gmail.com>
 Repository: CRAN
-Date/Publication: 2017-06-06 15:45:21 UTC
+Date/Publication: 2017-06-21 16:48:33 UTC

@@ -22,7 +22,7 @@ This function apply TestType function multiple times, to be able of determine th
 3.1 = Matrix size greater than 2 and diagonal
 3.2 = Matrix size greater than 2 with k-1 row or columns with marginal equal to a_{ii} or k-2 where marginals of columns and rows equals to a_{ii}
 3.3 = Matrix size greater than 2 with h where Xt - sum(diag(M1)) = Xr[h] + Xc[h] - 2 * M1[h,h]
-3.4 = Matrix size greater than 2 with i where a_{ii} = 0 or with marginals by columns or row equals to zero
+3.4 = Matrix size greater than 2 with i where a_{ii} = 0 or equl to marginals by columns or row 
 3.5 = Matrix size greater than 2 without a_{ii} = 0 or without marginals by columns or row equals to zero
 }
 \examples{

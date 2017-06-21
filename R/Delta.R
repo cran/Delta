@@ -59,8 +59,12 @@ Delta <- function(datatable,fixedrows = FALSE, gstandard = "No",
 	Pi 		= res.Pi$Pi
 	Delta 	= res.Pi$Delta
 	B 		= res.Pi$B
-   	#mat will be the matrix to be used for calcs
-	mat = M2
+   	#mat will be the matrix to be used for calcs of covariance
+	#Also Delta_cov, Pi_cov and B_cov
+	mat 	= M2
+	Pi_cov 	= res.Pi$Pi
+	Delta_cov = res.Pi$Delta
+	B_cov	= res.Pi$B
   
 	#Goodnes of fit to the model
     res = GetGoodness(mat,Pi,Delta)
@@ -79,27 +83,31 @@ Delta <- function(datatable,fixedrows = FALSE, gstandard = "No",
 	#To avoid issues with tp = 3.1, tp will be fixed to 3.4
 	if (tp == "3.1" | tp == "3.4"){
 	  res.Pi 	= GetDeltaPi(M3,"3.4",tol,maxits)
-	  Pi 		= res.Pi$Pi
-	  Delta 	= res.Pi$Delta
-	  B 		= res.Pi$B
+	  Pi_cov 	= res.Pi$Pi
+	  Delta_cov = res.Pi$Delta
+	  B_cov 	= res.Pi$B
 	  mat 		= M3
 	}
 	
-	Covar = GetCovariance(mat,Delta,Pi,B)
+	Covar = GetCovariance(mat,Delta_cov,Pi_cov,B_cov)
 	Cov_Delta 	= Covar$Cov_Delta
 	Cov_mix 	= Covar$Cov_mix
 	Cov_Pi 		= Covar$Cov_Pi
-	
+	E			= Covar$E
 		  
 	#Update Delta and Pi to correct size in cases 2.X
 	if (k==2){
 	  Pi 	= Pi[-3]
+	  Pi_cov= Pi_cov[-3]
 	  Delta = Delta[-3]
+	  Delta_cov = Delta_cov[-3]
 	  Cov_Delta = Cov_Delta[-3,-3]
 	  Cov_mix = Cov_mix[-3,-3]
 	  Cov_Pi = Cov_Pi[-3,-3]
 	}
-	res.Params = GetDeltaParams(mat,fixedrows, Delta, Pi, B, k, Cov_Delta)
+	
+	res.Params = GetDeltaParams(M2, Delta, Pi, k)
+	res.ParamsVar = GetDeltaParamsVar(mat,fixedrows, Delta_cov, Pi_cov, k, Cov_Delta, E)
 	
 	#Calculations Part 3: Asintotic calculations
 	if (tp == "2.0" | tp == "2.1" | tp == "2.2"){
@@ -107,9 +115,7 @@ Delta <- function(datatable,fixedrows = FALSE, gstandard = "No",
 	  res.M5 = GetAsinDeltaParams(M5,fixedrows)
 	}	
   }
- 
-
-
+  
   if (tp == "2.0" | tp == "2.1" | tp == "2.2" | tp == "3.0" | tp == "3.2" | tp == "3.3"){
     res = list("Raw.matrix" = datatable, "M1" = M1,"M2" = M2)
   }
@@ -136,7 +142,7 @@ Delta <- function(datatable,fixedrows = FALSE, gstandard = "No",
 	  else {
 		Kappa.results	= paste("Kappa \u00b1 S.E. = ",round(kappa.val,dplaces), " \u00b1 ",round(kappa.SE,dplaces))
 	  }
-	  Delta.results	= paste("Delta \u00b1 S.E. = ",round(res.Params$Delta.total,dplaces), " \u00b1 ",round(res.Params$Delta.total.cov,dplaces))
+	  Delta.results	= paste("Delta \u00b1 S.E. = ",round(res.Params$Delta.total,dplaces), " \u00b1 ",round(res.ParamsVar$Delta.total.cov,dplaces))
 	  
 	  Encoding(Chisq) = "UTF-8"
 	  Encoding(Kappa.results) = "UTF-8"
@@ -149,26 +155,26 @@ Delta <- function(datatable,fixedrows = FALSE, gstandard = "No",
 	  res$Cov_mix		= round(Cov_mix,dplaces)
 	  res$Cov_Pi		= round(Cov_Pi,dplaces)
 
-	  if (!is.null(res.Params$A.cov)) {
-		Agreement = paste(round(res.Params$A,dplaces)," \u00b1 ",round(res.Params$A.cov,dplaces))
+	  if (!is.null(res.ParamsVar$A.cov)) {
+		Agreement = paste(round(res.Params$A,dplaces)," \u00b1 ",round(res.ParamsVar$A.cov,dplaces))
 	  }
 	  else{
 	    Agreement = paste(round(res.Params$A,dplaces))
 	  }
-	  if (!is.null(res.Params$F.cov)) {
-	    Conformity = paste(round(res.Params$F,dplaces)," \u00b1 ",round(res.Params$F.cov,dplaces))
+	  if (!is.null(res.ParamsVar$F.cov)) {
+	    Conformity = paste(round(res.Params$F,dplaces)," \u00b1 ",round(res.ParamsVar$F.cov,dplaces))
 	  }
 	  else{
 	    Conformity = paste(round(res.Params$F,dplaces))
 	  }
-	  if (!is.null(res.Params$P.cov)) {
-	    Predictivity = paste(round(res.Params$P,dplaces)," \u00b1 ",round(res.Params$P.cov,dplaces))
+	  if (!is.null(res.ParamsVar$P.cov)) {
+	    Predictivity = paste(round(res.Params$P,dplaces)," \u00b1 ",round(res.ParamsVar$P.cov,dplaces))
 	  }
 	  else{
 	    Predictivity = paste(round(res.Params$P,dplaces))
 	  }
-	  if (!is.null(res.Params$S.cov)) {
-	    Consistency = paste(round(res.Params$S,dplaces)," \u00b1 ",round(res.Params$S.cov,dplaces))
+	  if (!is.null(res.ParamsVar$S.cov)) {
+	    Consistency = paste(round(res.Params$S,dplaces)," \u00b1 ",round(res.ParamsVar$S.cov,dplaces))
 	  }
 	  else{
 	    Consistency = paste(round(res.Params$S,dplaces))
@@ -182,17 +188,20 @@ Delta <- function(datatable,fixedrows = FALSE, gstandard = "No",
 	  if (is.null(Pi)){
 		Pi		= rep(0,k)
 	  }
-	  Table = data.frame(1:k,round(Delta,dplaces),round(Pi,dplaces),Agreement,Conformity,Predictivity,Consistency)
 	  if (tp == "3.1" | tp == "3.4"){
+	    Delta_tab 	= paste(round(Delta,dplaces), "(" ,round(Delta_cov,dplaces) , "*)")
+	    Pi_tab 		= paste(round(Pi,dplaces), "(" , round(Pi_cov,dplaces), "*)")
+	    Table 		= data.frame(1:k,Delta_tab,Pi_tab,Agreement,Conformity,Predictivity,Consistency)
 		colnames(Table) = c("Class","Delta (*)","Pi (*)","Agreement","Conformity","Predictivity","Consistency")
 	  } 
 	  else {
+	    Table = data.frame(1:k,round(Delta,dplaces),round(Pi,dplaces),Agreement,Conformity,Predictivity,Consistency)
 		colnames(Table) = c("Class","Delta","Pi","Agreement","Conformity","Predictivity","Consistency")
 	  }
 	  
 	  res$Fullparamstable = Table
 	  res$Deltaoverall = round(res.Params$Delta.total,dplaces)
-	  res$Deltaoverall_SE  = round(res.Params$Delta.total.cov,dplaces)
+	  res$Deltaoverall_SE  = round(res.ParamsVar$Delta.total.cov,dplaces)
 
 	  if (delta.samplingtype == 1) {
 		Table = Table[,c(-6,-7)]
@@ -272,12 +281,15 @@ Delta <- function(datatable,fixedrows = FALSE, gstandard = "No",
 		Encoding(Predictivity) = "UTF-8"
 		Encoding(Consistency) = "UTF-8"
 		
-		Table = data.frame(1:k,round(res.M4$Delta,dplaces),round(res.M4$Pi,dplaces),Agreement,Conformity,Predictivity,Consistency)
 		if (tp == "2.1" ){
+	      Delta_tab = paste(round(Delta,dplaces), "(" ,round(res.M4$Delta,dplaces) , "*)")
+	      Pi_tab = paste(round(Pi,dplaces), "(" , round(res.M4$Pi,dplaces), "*)")
+		  Table = data.frame(1:k,Delta_tab,Pi_tab,Agreement,Conformity,Predictivity,Consistency)
 		  colnames(Table) = c("Class","Delta (*)","Pi (*)","Agreement (*)","Conformity (*)","Predictivity (*)","Consistency (*)")
 		} 
 		else {
-			colnames(Table) = c("Class","Delta","Pi","Agreement","Conformity","Predictivity","Consistency")
+		  Table = data.frame(1:k,round(res.M4$Delta,dplaces),round(res.M4$Pi,dplaces),Agreement,Conformity,Predictivity,Consistency)
+		  colnames(Table) = c("Class","Delta","Pi","Agreement","Conformity","Predictivity","Consistency")
 		}
 		res$Fullparamstable_AN = Table
 		res$Deltaoverall_AN = round(res.M4$Delta.total,dplaces)

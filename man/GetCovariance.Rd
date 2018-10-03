@@ -7,7 +7,7 @@
 GetCovariance(mx, Delta, Pi, B)
 }
 \arguments{
-\item{mx}{Matrix. Modified matrix to have a solution Usually GetMx$M2.}
+\item{mx}{Matrix. Modified matrix to have a solution. Usually GetMx$M1 for k>2 and GetMx$M2 in case of k = 2.}
 
 \item{Delta}{Vector. Each element indicate the probability of recognize an element i.}
 

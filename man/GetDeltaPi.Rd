@@ -4,32 +4,35 @@
 \alias{GetDeltaPi}
 \title{Calculate Delta and Pi parameters function}
 \usage{
-GetDeltaPi(mx, tp, tol = 1e-12, maxits = 1000)
+GetDeltaPi(mx, dtp, tol = 1e-12, maxits = 1000, original.mx = TRUE)
 }
 \arguments{
-\item{mx}{Matrix. Modified matrix to have a solution Usually GetMx$M2.}
+\item{mx}{Matrix. Modified matrix to have a solution. Usually GetMx$M1 for k>2 and GetMx$M2 in case of k = 2.}
 
-\item{tp}{String. Type of problem.}
+\item{dtp}{String. Type of delta problem.}
 
 \item{tol}{Double number. Indicate the precision of the numeric method to calculate B. Expected to be 1e-6 <= tol <= 1e-15.Default is 1e-12.}
 
 \item{maxits}{Whole number. Indicate the maximum number of iterations of the numeric method to calculate B. Expected to be 100 <= maxits <= 5000. Default is 1000.}
+
+\item{original.mx}{Boolean. Indicate if the dtp parameter correspond to the current mx parameter. By default TRUE.}
 }
 \description{
 This function provide an estimation of Pi and Delta for each category. To do so, it is needed to solve the non-linear 
 equation of B, given by the function GetB.
 }
 \details{
-In some type of problems, such as "2.1" and "3.1", problem has a unique solution for Delta and infinite for Pi. For this reason
-we calculate the solution for Delta and get Pi as NULL.
+In some type of problems, the solution is on the borderline, and in those situation we may have not solutions at all, only one or 
+infinity of them.
 }
 \examples{
-GetDeltaPi(mx = matrix(c(1,0,0,0,2,0,0,0,3),3,3), tp = "3.1", tol = 1e-12, maxits = 1000)
-GetDeltaPi(mx = matrix(c(1.5,2.5,0.5,3.5,4.5,0.5,0.5,0.5,1.5),3,3), tp = "3.2", 
-           tol = 1e-12, maxits = 1000)
+GetDeltaPi(mx = matrix(c(1,0,0,0,2,0,0,0,3),3,3), dtp = "DN0", tol = 1e-12, maxits = 1000)
+GetDeltaPi(mx = matrix(c(1.5,2.5,0.5,3.5,4.5,0.5,0.5,0.5,1.5),3,3), dtp = "DN2", 
+           tol = 1e-12, maxits = 1000, original.mx = FALSE)
 }
 \keyword{Delta}
+\keyword{dtp}
 \keyword{maxits}
 \keyword{mx}
+\keyword{original.mx}
 \keyword{tol}
-\keyword{tp}

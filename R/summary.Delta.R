@@ -7,8 +7,11 @@
 
 summary.Delta <- function(object,...) {
   temp = object$Summary
+  dtp  = object$dtp
+  dtp2  = object$dtp2
+  ktp  = object$ktp
   temp$Summary <- as.character(temp$Summary)
-  if(!is.null(object$Summary_AN)){
+  if(object$k == 2){
      temp = rbind(temp, 
             paste(as.character(unlist(object$Summary_AN)[2]),"#") ,
             paste(as.character(unlist(object$Summary_AE)[2]),"##"))
@@ -26,11 +29,7 @@ summary.Delta <- function(object,...) {
       print(temp, row.names = FALSE)
   }
     #Note under some cases;
-	tp = object$tp
-    if (tp == "2.0" | tp == "3.0") {
-      cat("* A total of rows or column is equal to zero: Results obtained adding 0.5 to all cells. ",'\n')
-    }
-    else if (tp == "2.1" | tp == "3.1") {
-      cat("*(Since R(i)=C(i)=x(i,i) for all i, S.E.(kappa) has been obtained adding 0.5 to the original data)",'\n')
+    if (dtp2 == "DA0" || dtp =="DN0" || dtp =="DN1" || ktp == "K0") {
+      cat("* This value has been obtained adding 0.5 to the original data)",'\n')
     }
 }

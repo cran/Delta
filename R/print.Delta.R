@@ -8,9 +8,12 @@
 #' @method print Delta 
 print.Delta<- function(x,...){
    # Information about deleted rows;
-   tp = x$tp
+   dtp = x$dtp
+   dtp2 = x$dtp2
+   ktp = x$ktp
    samplingtype = x$samplingtype
    
+    #1th output;
    cat("               RESULTS","\n")
    if (x$k != x$k0){
 	if (x$k == x$k0-1){
@@ -20,206 +23,210 @@ print.Delta<- function(x,...){
 	   cat("Categories i = ",x$Del_rows, " had been deleted from the problem because r_i = c_i = 0",'\n')
 	}
    }
+    #2th output;
    #Information about raw matrix and M1
    cat('\n',"Original data",'\n')
    print(x$M1)
+    #If k = 2 show M2;
+    if (x$k == 2){
+    cat("The problem has infinite solutions. The following solution has been obtained by creating an ",'\n',
+        "extra (and fictitious) class where C(3)=R(3)=x(3,3)=1 and by adding 0.5 to all the ",'\n',
+        "observations. ",'\n'); 
+        print(x$M2)
+    }
    #No more results for cases 1.0 and 1.1
-   if (x$tp != "1.0" & x$tp != "1.1"){
-	#Special note and M2 shown in some cases;
-    if (x$tp == "2.0" | tp == "2.1" | tp == "2.2") {
-      cat("The problem has infinite solutions. The following solution has been obtained by creating an extra",'\n',
-	  "(and fictitious) class where c_3=r_3=x_33=1 and by adding 0.5 to all the observations. ",'\n','\n',
-	  "Data analyzed by Delta model",'\n')
-  	  print(x$M2)
+   if (x$k >= 2){#note and M2 shown in some cases;
+    if (dtp == "DN0" || dtp == "DN1") {  
+      if (dtp == "DN0") {  
+        cat("Some of the delta model parameters are at the border of the parametric space, so SE can not be ",'\n',
+        "estimated. That is why the following table only provides the parameters estimators of the",'\n',
+        "model and the measures of agreement.",'\n')
+      }
+      else if (dtp == "DN1") {
+        cat("At least one estimation falls on the boundary of the parametric space (for this reason the values",'\n',
+        "of SE have not been obtained) and the global agreement is not representative.",'\n')
+      }
+    
+      if (samplingtype<=3){
+        cat("Totals in rows are prefixed",'\n')
+      }
+      else {
+        cat("Totals in rows and columns are at random",'\n')
+      }
+      if (samplingtype==1 | samplingtype==4){
+        cat("Row observer is standard",'\n')
+      } 
+      else if (samplingtype==2){
+        cat("Row observer is in columns",'\n')
+      } 
+      else {
+        cat("There isn't a standard observer",'\n')
+      }
+      # All model parameters
+      temp = paste("Model Parameters (Delta and Pi) and All Concordance Measures ")
+      Encoding(temp) = "UTF-8"
+      cat('\n',temp,'\n')
+      print(x$Paramstable, row.names = FALSE)
+      temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall," \u00b1 ",x$Deltaoverall_SE)
+      Encoding(temp) = "UTF-8"
+      cat(temp,'\n')
+      
+      cat("The results that follow are based on the original data increased by 0.5.",'\n')
+      print(x$M3)
+      # All model parameters
+      temp = paste("Model Parameters (Delta and Pi) and All Concordance Measures \u00b1 S.E.")
+      Encoding(temp) = "UTF-8"
+      cat('\n',temp,'\n')
+      print(x$Paramstable2, row.names = FALSE)
+      temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall2," \u00b1 ",x$Deltaoverall_SE2)
+      Encoding(temp) = "UTF-8"
+      cat(temp,'\n')
     }
-    else if (tp == "3.0") {
-      cat("The problem has undetermined solutions. The following solution has been obtained by adding 0.5 to",'\n',
-	  "all the observations",'\n',"Data analyzed by Delta model",'\n')
-      print(x$M2)
-
-    }
-    else if (tp == "3.2") {
-      cat("The problem has infinite solutions. The following solution has been obtained by adding 0.5 to all ",'\n',
-	  "the observations.",'\n',"Data analyzed by Delta model",'\n')
-  	  print(x$M2)
-    }
-    else if (tp == "3.3") {
-      cat("The problem has no solution. The following solution has been obtained by adding 0.5 to all the ",'\n',
-	  "observations.",'\n',"Data analyzed by Delta model",'\n')
-  	  print(x$M2)
-    }
+    else {
+      if (samplingtype<=3){
+        cat("Totals in rows are prefixed",'\n')
+      }
+      else {
+        cat("Totals in rows and columns are at random",'\n')
+      }
+      if (samplingtype==1 | samplingtype==4){
+        cat("Row observer is standard",'\n')
+      } 
+      else if (samplingtype==2){
+        cat("Row observer is in columns",'\n')
+      } 
+      else {
+        cat("There isn't a standard observer",'\n')
+      }
+      # All model parameters
+      temp = paste("Model Parameters (Delta and Pi) and All Concordance Measures \u00b1 S.E.")
+      Encoding(temp) = "UTF-8"
+      cat('\n',temp,'\n')
+      print(x$Paramstable, row.names = FALSE)
+      temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall," \u00b1 ",x$Deltaoverall_SE)
+      Encoding(temp) = "UTF-8"
+      cat(temp,'\n')
+    }   
 
 	#Expected quantities
+    #3th output;
     cat('\n',"Expected quantities",'\n')
     print(x$E_matrix)
 
     #Little summary
+    #4th output;
     cat('\n',"               SUMMARY: Goodness of Fit + Kappa + Delta",'\n')
     print(x$Summary, row.names = FALSE)
     #Note under some cases;
-    if (tp == "2.0" | tp == "3.0") {
-      cat("* A total of rows or column is equal to zero: Results obtained adding 0.5 to all cells. ",'\n')
-    }
-    else if (tp == "2.1" | tp == "3.1") {
-      cat("*(Since R(i)=C(i)=x(i,i) for all i, S.E.(kappa) has been obtained adding 0.5 to the original data)",'\n')
+    if (ktp == "K0" || dtp == "DN0" || dtp == "DN1") {
+    #(este valor ha sido calculado para los datos originales incrementados en 0.5)
+      cat("* This value has been obtained adding 0.5 to the original data. ",'\n')
     }
 	
+    #5th output;
 	if (x$showall == TRUE){
-		#HIDDEN RESULTS: Cov matrix
-		cat('\n',"Covariance Matrix = Cov(Delta,Pi)",'\n')
-		cat('Cov(Delta,Delta)','\n')
-		print(x$Cov_Delta)
-		cat('\n','Cov(Delta,Pi)','\n')
-		print(x$Cov_mix)
-		cat('\n','Cov(Pi,Pi)','\n')
-		print(x$Cov_Pi)
+      #HIDDEN RESULTS: Cov matrix
+      cat('\n',"Covariance Matrix = Cov(Delta,Pi)",'\n')
+      cat('Cov(Delta,Delta)','\n')
+      print(x$Cov_Delta)
+      cat('\n','Cov(Delta,Pi)','\n')
+      print(x$Cov_mix)
+      cat('\n','Cov(Pi,Pi)','\n')
+      print(x$Cov_Pi)
+    }
 		
-		#HIDDEN RESULTS: All model parameters
-		temp = paste("Model Parameters (Delta and Pi) and All Concordance Measures \u00b1 S.E.")
-		Encoding(temp) = "UTF-8"
-		cat('\n',temp,'\n')
-		print(x$Fullparamstable, row.names = FALSE)
-		temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall," \u00b1 ",x$Deltaoverall_SE)
-		Encoding(temp) = "UTF-8"
-		cat(temp,'\n')
-		if (tp == "3.1"){
-		  cat("The problem has infinite solutions for pi. For this reason the values of S.E. have been obtained by adding",'\n', 
-		  "0.5 to all the observations. The new parameters are those marked with *.",'\n')
-		}
-		else if (tp == "3.4"){
-		  cat("At least one estimation of 'delta i' or of 'pi i' falls on the boundary of the parametric space. For this ",'\n', 
-		  "reason the values of S.E. have been obtained by adding 0.5 to all the observations. The new parameters are those",'\n', 
-		  "marked with *.",'\n')
-		}
-	}
-	
-	#Model parameters selected
-	temp = paste("Model Parameters (Delta and Pi) and Concordance Measures \u00b1 S.E. with selected conditions")
-	Encoding(temp) = "UTF-8"
-	cat('\n',temp,'\n')
-	if (samplingtype<=3){
-	  cat("Totals in rows are prefixed",'\n')
-	}
-	else {
-	  cat("Totals in rows and columns are at random",'\n')
-	}
-  	if (samplingtype==1 | samplingtype==4){
-	  cat("Row observer is standard",'\n')
-	} 
-  	else if (samplingtype==2){
-	  cat("Row observer is in columns",'\n')
-	} 
-	else {
-	  cat("There isn't a standard observer",'\n')
-	}
 
-	print(x$Paramstable, row.names = FALSE)
-	temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall," \u00b1 ",x$Deltaoverall_SE)
-	Encoding(temp) = "UTF-8"
-	cat(temp,'\n')
-
-	if (tp == "3.1"){
-	  cat("The problem has infinite solutions for pi. For this reason the values of S.E. have been obtained by adding",'\n', 
-	  "0.5 to all the observations. The new parameters are those marked with *.",'\n')
-	}
-	else if (tp == "3.4"){
-	  cat("At least one estimation of 'delta i' or of 'pi i' falls on the boundary of the parametric space. For this ",'\n', 
-	  "reason the values of S.E. have been obtained by adding 0.5 to all the observations. The new parameters are those",'\n', 
-	  "marked with *.",'\n')
-	}
 	
-	if (tp == "2.0" | tp == "2.1" | tp == "2.2"){
+	if (x$k == 2){
 	  ### ASINTOTIC NORMAL SOLUTION ###;
+      # 6th output;
 	  cat('\n','\n',"          ASINTOTIC SOLUTION (based in raw data)",'\n')
       cat("(These solutions have been obtained like in previous cases, but adding c insteed of 0.5 and let c tend 0)",'\n')
       cat('\n',"Data analyzed by Delta model",'\n')
-	  print(x$M_AN)
-	  if (tp == "2.0"){
-		cat("* A row or column total is zero: Results has been obtained adding 0.5 to all cells",'\n')
-	  }
-	  
+	  print(x$M1)
+      
+	  if (dtp2 == "DA0") {  
+        cat("Some of the delta model parameters are at the border of the parametric space, so SE can not be ",'\n',
+        "estimated. That is why the following table only provides the parameters estimators of the",'\n',
+        "model and the measures of agreement.",'\n')
+        
+        if (samplingtype<=3){
+          cat("Totals in rows are prefixed",'\n')
+        }
+        else {
+          cat("Totals in rows and columns are at random",'\n')
+        }
+        if (samplingtype==1 | samplingtype==4){
+          cat("Row observer is standard",'\n')
+        } 
+        else if (samplingtype==2){
+          cat("Row observer is in columns",'\n')
+        } 
+        else {
+          cat("There isn't a standard observer",'\n')
+        }
+        # All model parameters
+        temp = paste("Model Parameters (Delta and Pi) and All Concordance Measures ")
+        Encoding(temp) = "UTF-8"
+        cat('\n',temp,'\n')
+        print(x$Paramstable_AN, row.names = FALSE)
+        temp = paste("Delta = ", x$Deltaoverall_AN)
+        Encoding(temp) = "UTF-8"
+        cat(temp,'\n')
+        
+        cat("The results that follow are based on the original data increased by 0.5.",'\n')
+        print(x$M3)
+        # All model parameters
+        temp = paste("Model Parameters (Delta and Pi) and All Concordance Measures \u00b1 S.E.")
+        Encoding(temp) = "UTF-8"
+        cat('\n',temp,'\n')
+        print(x$Paramstable_AN2, row.names = FALSE)
+        temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall_AN2," \u00b1 ",x$Deltaoverall_SE_AN2)
+        Encoding(temp) = "UTF-8"
+        cat(temp,'\n')
+      }
+      else {
+        if (samplingtype<=3){
+          cat("Totals in rows are prefixed",'\n')
+        }
+        else {
+          cat("Totals in rows and columns are at random",'\n')
+        }
+        if (samplingtype==1 | samplingtype==4){
+          cat("Row observer is standard",'\n')
+        } 
+        else if (samplingtype==2){
+          cat("Row observer is in columns",'\n')
+        } 
+        else {
+          cat("There isn't a standard observer",'\n')
+        }
+        # All model parameters
+        temp = paste("Model Parameters (Delta and Pi) and All Concordance Measures ")
+        Encoding(temp) = "UTF-8"
+        cat('\n',temp,'\n')
+        print(x$Paramstable_AN, row.names = FALSE)
+        temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall_AN," \u00b1 ",x$Deltaoverall_SE_AN)
+        Encoding(temp) = "UTF-8"
+        cat(temp,'\n')
+      }
+        
+      # 7th output;
       cat('\n',"               SUMMARY: Kappa + Delta",'\n')
 	  print(x$Summary_AN, row.names = FALSE)
 	  
-	  if (tp == "2.0" ) {
-		cat("* A total of rows or column is equal to zero: Results obtained adding 0.5 to all cells. ",'\n')
+	  if (dtp2 == "DA0" || ktp == "K0" ) {
+		cat("* This value has been obtained adding 0.5 to the original data) ",'\n')
 	  }
-	  else if (tp == "2.1" ) {
-		cat("*(Since R(i)=C(i)=x(i,i) for all i, S.E.(kappa) has been obtained adding 0.5 to the original data) ",'\n')
-	  }
-	  
-	  if (x$showall == TRUE){
-		  #HIDDEN RESULTS: All model parameters
-		  temp = paste("Model Parameters (Delta and Pi) and All Concordance Measures \u00b1 S.E. (Asintotic Normal)")
-		  Encoding(temp) = "UTF-8"
-		  cat('\n',temp,'\n')
-		  print(x$Fullparamstable_AN, row.names = FALSE)
-		temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall_AN," \u00b1 ",x$Deltaoverall_SE_AN)
-		Encoding(temp) = "UTF-8"
-		cat(temp,'\n')
-		  if (tp == "2.0"){
-		  cat("The estimations of 'delta i' falls on the boundary of the parametric space. For this reason the values of S.E.",'\n',
-				"have been obtained by adding 0.5 to all the observations. The new parameters are those marked with *." ,'\n')
-		  }
-	  }
-	  
-	  #Model parameters selected
-	  temp = paste("Model Parameters (Delta and Pi) and Concordance Measures \u00b1 S.E. with selected conditions",'\n',
-					"(Asintotic Normal)")
-	  Encoding(temp) = "UTF-8"
-	  cat('\n',temp,'\n')
-	  if (samplingtype<=3){
-	    cat("Totals in rows are prefixed",'\n')
-	  }
-	  else {
-	    cat("Totals in rows and columns are at random",'\n')
-	  }
-  	  if (samplingtype==1 | samplingtype==4){
-	    cat("Row observer is standard",'\n')
-	  } 
-  	  else if (samplingtype==2){
-	    cat("Row observer is in columns",'\n')
-	  } 
-	  else {
-	    cat("There isn't a standard observer",'\n')
-	  }
-	  print(x$Paramstable_AN, row.names = FALSE)
-	temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall_AN," \u00b1 ",x$Deltaoverall_SE_AN)
-	Encoding(temp) = "UTF-8"
-	cat(temp,'\n')
-	  if (tp == "2.0"){
-	    cat("The estimations of 'delta i' falls on the boundary of the parametric space. For this reason the values of S.E.",'\n',
-			"have been obtained by adding 0.5 to all the observations. The new parameters are those marked with *." ,'\n')
-	  }
-	  
 	  
 	  ### ASINTOTIC EXTRA SOLUTION ###;
+      # 8th output;
 	  cat('\n',"        ASINTOTIC SOLUTION (based in raw data incremented by 1)",'\n')
       cat("(These solutions have been obtained like in previous cases, but for original data incremented in 1)",'\n')
       cat('\n',"Data analyzed by Delta model",'\n')
-	  print(x$M_AE)
-
-      cat('\n',"               SUMMARY: Kappa + Delta",'\n')
-	  print(x$Summary_AE, row.names = FALSE)
-	  
-	  if (tp == "2.0" ) {
-		cat("* A total of rows or column is equal to zero: Results obtained adding 0.5 to all cells. ",'\n')
-	  }     
-	  else if (tp == "2.1" ) {
-		cat("*(Since R(i)=C(i)=x(i,i) for all i, S.E.(kappa) has been obtained adding 0.5 to the original data) ",'\n')
-	  }
-	  
-	  if (x$showall == TRUE){
-	    #HIDDEN RESULTS: All model parameters
-		temp = paste("Model Parameters (Delta and Pi) and All Concordance Measures \u00b1 S.E. (Asintotic Extra)")
-		Encoding(temp) = "UTF-8"
-		cat('\n',temp,'\n')
-		print(x$Fullparamstable_AE, row.names = FALSE)
-		temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall_AE," \u00b1 ",x$Deltaoverall_SE_AE)
-		Encoding(temp) = "UTF-8"
-		cat(temp,'\n')
-	  }
-	  #Model parameters selected
+	  print(x$M4)
+      
+      #Model parameters selected
 	  temp = paste("Model Parameters (Delta and Pi) and Concordance Measures \u00b1 S.E. with selected conditions",'\n',
 					"(Asintotic Extra)")
 	  Encoding(temp) = "UTF-8"
@@ -243,6 +250,10 @@ print.Delta<- function(x,...){
 	  temp = paste("Delta \u00b1 S.E. = ", x$Deltaoverall_AE," \u00b1 ",x$Deltaoverall_SE_AE)
 	  Encoding(temp) = "UTF-8"
 	  cat(temp,'\n')
+      
+      # 9th output;
+      cat('\n',"               SUMMARY: Kappa + Delta",'\n')
+	  print(x$Summary_AE, row.names = FALSE)
 	}
   }
    cat("End of the problem: K = ", x$k,'\n')

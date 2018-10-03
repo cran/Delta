@@ -2,7 +2,7 @@
 #'
 #' This function provide an Chi-square test for the given matrix, Delta and Pi provided.
 #' 
-#' @param mx Matrix. Modified matrix to have a solution Usually GetMx$M2.
+#' @param mx Matrix. Modified matrix to have a solution. Usually GetMx$M1 for k>2 and GetMx$M2 in case of k = 2.
 #' @param Delta Vector. Each element indicate the probability of recognize an element i.
 #' @param Pi Vector. Each element indicate the probability of classify at random an element in category i.
 #' @keywords Delta mx Pi Delta Goodness
@@ -59,15 +59,3 @@ GetGoodness <- function(mx,Pi,Delta){
   return(res)
 }
 
-#' @return \code{NULL}
-#'
-#' @rdname GetGoodness
-#' @param x List produced by GetGoodness
-#' @param ... Other print options
-#' @export
-#' @method print GetGoodness 
-print.GetGoodness<- function(x,...){
-   cat('X-squared =', x$X.squared, ', df =', x$df,', p-value =',x$p.value,'\n')
-   cat('Expected matrix:','\n')
-   print(x$E.matrix)
-}

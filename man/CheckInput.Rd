@@ -4,8 +4,8 @@
 \alias{CheckInput}
 \title{Main Check Input function}
 \usage{
-CheckInput(datatable, fixedrows = FALSE, gstandard = "No", maxits = 1000,
-  tol = 1e-12, dplaces = 4, showall = FALSE)
+CheckInput(datatable, fixedrows = FALSE, gstandard = "No",
+  maxits = 1000, tol = 1e-12, dplaces = 4, showall = FALSE)
 }
 \arguments{
 \item{datatable}{Matrix. Expected to be square matrix with at least 2 rows (columns), non negative values and at least an element different of zero.}

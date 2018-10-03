@@ -7,7 +7,7 @@
 GetB(mx, tol = 1e-12, maxits = 1000)
 }
 \arguments{
-\item{mx}{Matrix. Modified matrix to have a solution Usually GetMx$M2.}
+\item{mx}{Matrix. Modified matrix to have a solution. Usually GetMx$M1 for k>2 and GetMx$M2 in case of k = 2.}
 
 \item{tol}{Double number. Indicate the precision of the numeric method to calculate B. Expected to be 1e-6 <= tol <= 1e-15.Default is 1e-12.}
 

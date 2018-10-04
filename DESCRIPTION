@@ -1,7 +1,13 @@
 Package: Delta
 Title: Measure of Agreement Between Two Raters
-Version: 0.2.0.1
-Authors@R: person("Antonio", "Rodriguez", email = "tonirodriguezcontesti@gmail.com", role = c("aut", "cre"))
+Version: 0.2.0.2
+Authors@R: c(person("Antonio", "Rodriguez", email = "tonirodriguezcontesti@gmail.com", role = c("aut", "cre")),
+			 person("Pedro", "Femia", email = "pfemia@ugr.es", role = c("cph", "ctb")),
+			 person("Antonio", "Martin", email = "amartina@ugr.es", role = c("cph", "ctb")))
+Author: Antonio Rodriguez [aut, cre],
+  Pedro Femia [cph, ctb],
+  Antonio Martin [cph, ctb]
+Maintainer: Antonio Rodriguez <tonirodriguezcontesti@gmail.com>
 Description: Measure of agreement delta was originally by Martín & Femia (2004) <DOI:10.1348/000711004849268>. 
     Since then has been considered as agreement measure for different 
     fields, since their behavior is usually better than the usual kappa index
@@ -16,8 +22,6 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0
 NeedsCompilation: no
-Packaged: 2018-10-03 11:04:41 UTC; FabiToni
-Author: Antonio Rodriguez [aut, cre]
-Maintainer: Antonio Rodriguez <tonirodriguezcontesti@gmail.com>
+Packaged: 2018-10-03 13:48:29 UTC; FabiToni
 Repository: CRAN
-Date/Publication: 2018-10-03 12:00:03 UTC
+Date/Publication: 2018-10-04 19:20:03 UTC

@@ -23,7 +23,7 @@ GetM1 <- function(datatable) {
   if (is.null(k) & all(Delete == FALSE)){
     k = 0
   }
-  else if (is.null(k) & class(M1) == "numeric"){
+  else if (is.null(k) & is.numeric(M1)){
     k = 1
   }
   Deleted = which(!Delete, arr.ind = FALSE)
